@@ -1,0 +1,16 @@
+{% extends 'shop_base.html' %}
+{% block page_path %}店铺首页{% endblock %}
+{% block title %}店铺首页 | 淘淘乐{% endblock %}
+{% load staticfiles %}
+{% block right_form %}
+<div class="right companycenter layout" >
+    <div class="head">
+        <h1>商家介绍</h1>
+    </div>
+    <div class="tab_cont tab_cont1">
+                    {% autoescape off %}
+                        {{ shop.ShopDesc }}
+                    {% endautoescape %}
+    </div>
+</div>
+{% endblock %}

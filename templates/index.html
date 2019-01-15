@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block titile %}
+首页 | 淘淘乐
+{% endblock %}
+
+{% load staticfiles %}
+<!--crumbs start-->
+{% block custom_bread %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="banner">
+			<div class="wp">
+				<div class="fl">
+					<div class="imgslide">
+						<ul class="imgs">
+
+                            {% for banner in all_banner %}
+                            <li>
+                                    <a href="{{ banner.url }}">
+                                        <img width="1200" height="478" src="{{ MEDIA_URL }}{{ banner.image }}" />
+                                    </a>
+                                </li>
+{% endfor %}
+
+						</ul>
+					</div>
+					<div class="unslider-arrow prev"></div>
+					<div class="unslider-arrow next"></div>
+				</div>
+
+				</div>
+
+
+			</div>
+<!--banner end-->
+<!--feature start-->
+	<section>
+		<div class="wp">
+			<ul class="feature">
+				<li class="feature1">
+					<img class="pic" src="{% static 'images/feature1.png' %}"/>
+				</li>
+				<li class="feature2">
+					<img class="pic" src="{% static 'images/feature2.png' %}"/>
+				</li>
+				<li class="feature3">
+					<img class="pic" src="{% static 'images/feature3.png' %}"/>
+				</li>
+				<li class="feature4">
+					<img class="pic" src="{% static 'images/feature4.png' %}"/>
+				</li>
+			</ul>
+		</div>
+	</section>
+<!--feature end-->
+<!--module1 start-->
+	<section>
+		<div class="module">
+			<div class="wp">
+				<h1>商品</h1>
+				<div class="module1 eachmod">
+					<div class="module1_1 left">
+						<img width="228" height="614" src="{% static 'images/module1_1.jpg' %}"/>
+						<p class="fisrt_word">暖冬献好礼<br/>好物暖心窝</p>
+						<a class="more" href="{% url 'product:list' %}">查看更多商品 ></a>
+					</div>
+					<div class="right group_list">
+						<div class="module1_2 box">
+							<div class="imgslide2">
+								<ul class="imgs">
+                                    {% for banner_product in banner_products %}
+                                                                        <li>
+                                        <a href="{% url 'product:product_detail' banner_product.id %}">
+                                            <img width="470" height="300" src="{{ MEDIA_URL }}{{ banner_product.ProductImage }}" />
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+								</ul>
+							</div>
+							<div class="unslider-arrow2 prev"></div>
+							<div class="unslider-arrow2 next"></div>
+						</div>
+
+                    {% for product in products %}
+                            <div class="module1_{{ forloop.counter|add:2 }} box">
+                                <a href="{% url 'product:product_detail' product.id  %}">
+                                    <img width="233" height="190" src="{{ MEDIA_URL }}{{ product.ProductImage }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="{% url 'product:product_detail' product.id  %}">
+                                        <h2 title="{{ product.ProductName }}">{{ product.ProductName }}</h2>
+                                    </a>
+                                    <span class="fl">价格：<i class="key">{{ product.price }}</i></span>
+                                    <span class="fr">销量：{{ product.DealNum }}</span>
+                                </div>
+                                <div class="bottom">
+                                    <span class="fl" title="{{ product.product_shop.ShopName }}">{{ product.product_shop.ShopName }}</span>
+                                    <span class="star fr">{{ product.LikeNum }}</span>
+                                </div>
+                            </div>
+{% endfor %}
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section>
+		<div class="module greybg">
+			<div class="wp">
+				<h1>精选店铺</h1>
+				<div class="module3 eachmod">
+					<div class="module3_1 left">
+						<img width="228" height="463" src="{% static 'images/module3_1.jpg' %}"/>
+						<p class="fisrt_word">直营品质<br/>放心体验</p>
+						<a class="more" href="{% url 'shop:shop_list' %}">查看更多店铺 ></a>
+					</div>
+					<div class="right">
+						<ul>
+{% for shop in shops %}
+                            <li class="{% if forloop.counter|divisibleby:'5' %}five{% endif %}">
+                                    <a href="{% url 'shop:shop_home' shop.id %}">
+                                        <div class="company">
+                                            <img width="184" height="100" src="{{ MEDIA_URL }}{{ shop.ShopImage }}"/>
+                                            <div class="score">
+                                                <div class="circle">
+                                                    <h2>{{ shop.get_ShopKind_display}}</h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p><span class="key" title="{{ shop.ShopName }}">{{ shop.ShopName }}</span></p>
+                                    </a>
+                                </li>
+                            {% endfor %}
+
+
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}
+
+{% block custom_js %}
+    <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+{% endblock %}

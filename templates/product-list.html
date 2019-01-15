@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block titile %}
+商品列表页 | 淘淘乐
+{% endblock %}
+
+{% load staticfiles %}
+<!--crumbs start-->
+{% block custom_bread %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="{% url 'index' %}">首页</a>></li>
+                <li>商品</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <section>
+	<div class="wp">
+		<div class="list" style="margin-top:0;">
+			<div class="left layout">
+                <div class="listoptions">
+                    <ul>
+                        <li>
+                            <h2>售卖种类</h2>
+        {#					<div class="more">更多</div>#}
+                            <div class="cont">
+                                <a href="?keywords={{ search_keywords }}"><span class="{% ifequal kind_id "" %}active2{% endifequal %}">全部</span></a>
+                                {% for kind in all_kind %}
+                                    <a href="?kind={{ kind.id }}&keywords={{ search_keywords }}"><span class="{% ifequal kind.id|stringformat:"i" kind_id %}active2{% endifequal %}">{{ kind.KindName }}</span></a>
+                                {% endfor %}
+                            </div>
+                        </li>
+                    </ul>
+		        </div>
+				<div class="head" style="margin-top: 60px">
+					<ul class="tab_header">
+						<li class="{% ifequal sort "" %}active{% endifequal %}"><a href="?sort=kind={{ kind_id }}&keywords={{ search_keywords }}">最新 </a></li>
+						<li class="{% ifequal sort "hot" %}active{% endifequal %}"><a href="?sort=hot&kind={{ kind_id }}&keywords={{ search_keywords }}">最热门</a></li>
+						<li class="{% ifequal sort "DealNum" %}active{% endifequal %}"><a href="?sort=DealNum&kind={{ kind_id }}&keywords={{ search_keywords }}">交易最多</a></li>
+					</ul>
+				</div>
+                <div id="inWindow">
+                    <div class="tab_cont " id="content">
+					<div class="group_list">
+                        {% for product in all_product.object_list %}
+                            <div class="box">
+                                <a href="{% url 'product:product_detail' product.id %}">
+                                    <img width="280" height="350" class="scrollLoading" src="{{ MEDIA_URL }}{{ product.ProductImage }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="{% url 'product:product_detail' product.id %}">
+                                        <h2>{{ product.ProductName }}</h2>
+                                    </a>
+                                    <span class="fl">价格 <i class="key">{{ product.price }}</i></span>
+                                    <span class="fr">销量 <i class="key">{{ product.DealNum }}</i></span>
+                                </div>
+                                <div class="bottom">
+                                    <a href="{% url 'product:product_detail' product.id %}"><span class="fl">来自{{ product.product_shop.ShopName }}</span></a>
+                                    <span class="star fr  notlogin
+                                        " data-favid="15">
+                         {{ product.LikeNum }}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+					</div>
+		 <div class="pageturn">
+            <ul class="pagelist">
+              {% if all_product.has_previous %}
+ <li class="long"><a href="?{{ all_product.previous_page_number.querystring }}" >上一页</a></li>
+             {% endif %}
+          {% for page in all_product.pages %}
+        {% if page %}
+            {% ifequal page all_product.number %}
+                   <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+            {% else %}
+<li><a href="?{{ page.querystring }}">{{ page }}</a></li>
+            {% endifequal %}
+        {% else %}
+            <li class="none"><a href="">...</a></li>
+        {% endif %}
+    {% endfor %}
+    {% if all_product.has_next %}
+    <li class="long"><a href="?{{ all_product.next_page_number.querystring }}">下一页</a></li>
+    {% endif %}
+            </ul>
+         </div>
+				</div>
+                </div>
+			</div>
+			<div class="right layout">
+				<div class="head">热门商品推荐</div>
+				<div class="group_recommend">
+
+                    {% for hot_product in hot_products %}
+                        <dl>
+                            <dt>
+                                <a target="_blank" href="{% url 'product:product_detail' hot_product.id %}">
+                                    <img width="240" height="220" class="scrollLoading" src="{{ MEDIA_URL }}{{ hot_product.ProductImage }}"/>
+                                </a>
+                            </dt>
+                            <dd>
+                                <a target="_blank" href="{% url 'product:product_detail' hot_product.id %}">
+                                    <h2 style="text-align: center;font-size: 15px;"> {{ hot_product.ProductName }}</h2>
+                                </a>
+                            </dd>
+					    </dl>
+                    {% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block titile %}
+品牌详情 | 淘淘乐
+{% endblock %}
+
+{% load staticfiles %}
+<!--crumbs start-->
+{% block custom_bread %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="{% url 'index' %}">首页</a>></li>
+                   <li><a href="{% url 'shop:brand_list' %}">热销品牌</a>></li>
+                <li>品牌详情</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block content %}
+    <section>
+	<div class="wp butler-detail-box butler-diaryd-box clearfix">
+        <div class="fl list">
+            <div class="butler_detail_list clearfix">
+                <div class="brief">
+                    <dl class="des">
+                        <dt>
+                            <div class="picpic">
+                                <img width="100" height="100" src="{{ MEDIA_URL }}{{ brand.BrandImage }}"/>
+                            </div>
+                            <div class="btn">
+                                <span class="fl btn1 collectionbtn" id="jsLeftBtn">
+                                    {% if has_fav_brand %} 已收藏{% else %}收藏{% endif %}
+                                </span>
+                                <span class="fr btn2 shareBtn bdsharebuttonbox" data-tag="share_{{ brand.id }}">
+                                    <span class="fl">分享</span>
+                                    <a href="#" class="bds_more" data-cmd="more"></a>
+                                </span>
+                            </div>
+                        </dt>
+                        <dd>
+                            <a href="{% url 'shop:brand_detail' brand.id %}">
+                                <h1>{{ brand.BrandName }}<span class="key picbig">正品认证</span></h1>
+                            </a>
+                            <ul class="cont">
+                                <li>产品特点：<span>{{ brand.feature }}</span></li>
+                                <li>喜欢人数：<span>{{ brand.LikeNum }}</span></li>
+                                <li>热&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度：<span>{{ brand.ClickNum }}&nbsp;</span></li>
+                            </ul>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="butler_detail_cont clearfix">
+                <div class="left layout">
+				<div class="head">
+					<ul class="tab_header">
+						<li class="active">全部商品</li>
+					</ul>
+				</div>
+                    <div class="companycenter">
+                        <div class="group_list brief">
+
+                            {% for product in all_product %}
+                              <div class="module1_5 box">
+                                <a href="{% url 'product:product_detail' product.id %}">
+                                    <img width="214" height="190" class="scrollLoading" src="{{ MEDIA_URL }}{{ product.ProductImage }}"/>
+                                </a>
+                                <div class="des">
+                                    <a href="{% url 'product:product_detail' product.id %}"><h2>{{ product.ProductName }}</h2></a>
+                                    <span class="fl">价格：<i class="key">{{ product.price }}</i></span>
+                                    <span class="fr">销量：{{ product.DealNum }}</span>
+                                </div>
+                                <div class="bottom">
+                                    <span class="fl">{{ product.product_shop.ShopName }}</span>
+                                    <span class="star fr  notlogin" data-favid="15">0</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+
+
+
+
+
+                        </div>
+                    </div>
+                <!--<div class="pageturn">-->
+                    <!--<ul class="pagelist">-->
+                        <!--<li class="active"><a href="?page=1">1</a></li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            </div>
+            </div>
+        </div>
+        <div class="fr list">
+             <div class="butler_detail_list">
+                <div class="right butler-company-box">
+                <div class="head">
+                    <h1>{{ brand.shop.ShopName }}</h1>
+                    <p>售卖该品牌的店铺</p>
+                </div>
+                <div class="pic">
+                    <a href="{% url 'shop:shop_home' brand.shop.id %}">
+                        <img width="150" height="80" src="{{ MEDIA_URL }}{{ brand.shop.ShopImage }}"/>
+                    </a>
+                </div>
+                <a href="{% url 'shop:shop_home' brand.shop.id %}">
+                    <h2 class="center">{{ brand.shop.ShopNmae }}</h2>
+                </a>
+                <p class="center tell">地址：{{ brand.shop.address }}</p>
+                <a class="btn" id="jsRightBtn">                                    {% if has_fav_shop %} 已收藏{% else %}收藏{% endif %}</a>
+            </div>
+            </div>
+            <div class="butler_detail_cont">
+                <div class="butler_list_box">
+                    <div class="right layout">
+                        <div class="head">品牌排行榜</div>
+
+                        {% for brand in rank_brand %}
+                                              <dl class="des">
+                            <span class="num fl">{{ forloop.counter }}</span>
+                            <a href="{% url 'shop:brand_detail' brand.id %}">
+                                <dt>
+                                    <img width="50" height="50" class="scrollLoading" src="{{ MEDIA_URL }}{{ brand.BrandImage }}"/>
+                                </dt>
+                            </a>
+                            <dd>
+                                <a href="{% url 'shop:brand_detail' brand.id %}">
+                                    <h1 title="{{ brand.BrandName }}">{{ brand.BrandName }}</h1>
+                                </a>
+                                <p>喜欢人数：<span>{{ brand.LikeNum }}人</span></p>
+                            </dd>
+                        </dl>
+                        {% endfor %}
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+</section>
+{% endblock %}
+
+{% block custom_js %}
+<script type="text/javascript">
+//收藏分享
+function add_fav(current_elem, LoveId, LoveType){
+    $.ajax({
+        cache: false,
+        type: "POST",
+        url:"{% url "shop:add_fav" %}",
+        data:{'LoveId':LoveId, 'LoveType':LoveType},
+        async: true,
+        beforeSend:function(xhr, settings){
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        },
+        success: function(data) {
+            if(data.status == 'fail'){
+                if(data.msg == '用户未登录'){
+                    window.location.href="/login/?next={{ request.path }}";
+                }else{
+                    alert(data.msg)
+                }
+
+            }else if(data.status == 'success'){
+                current_elem.text(data.msg)
+            }
+        },
+    });
+}
+
+$('#jsLeftBtn').on('click', function(){
+    add_fav($(this), {{ brand.id }}, 3);
+});
+
+$('#jsRightBtn').on('click', function(){
+    add_fav($(this), {{ brand.shop.id }}, 2);
+});
+
+
+</script>
+<script>
+
+    window._bd_share_config = {
+        "common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":["mshare","qzone","tsina","weixin","sqq"],"bdPic":"","bdStyle":"0","bdSize":"16"},
+        share : [
+                   {
+			"tag" : "share_{{ brand.id }}",
+			"bdSize" : 16,
+                       "bdText":"品牌-{{ brand.BrandName }}-淘淘乐",
+                       "bdDesc": "我在淘淘乐发现了“{{ brand.BrandName }}”非常好用，便宜又实惠，快来看看吧",
+                        "bdUrl": 'http://127.0.0.1:8000/{% url 'shop:brand_detail' brand.id %}',
+
+
+		},
+]
+
+    }
+	//以下为js加载部分
+	with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+{% endblock %}

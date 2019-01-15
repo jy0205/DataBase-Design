@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block titile %}
+品牌 | 淘淘乐
+{% endblock %}
+
+{% load staticfiles %}
+<!--crumbs start-->
+{% block custom_bread %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="{% url 'index' %}">首页</a>></li>
+                <li>热销品牌</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block content %}
+    <section>
+	<div class="wp butler_list_box list">
+	<div class='left'>
+		<div class="butler_list layout">
+			<div class="head">
+				<ul class="fl tab_header">
+					<li {% ifequal sort "" %}class="active"{% endifequal %}><a href="?sort=&keywords={{ search_keywords }}">全部</a> </li>
+					<li  {% ifequal sort "hot" %}class="active"{% endifequal %}><a href="?sort=hot&keywords={{ search_keywords }}">人气 &#8595;</a></li>
+				</ul>
+                <div class="fr butler-num">共<span class="key">{{ brand_nums }}</span>个&nbsp;&nbsp;&nbsp;</div>
+			</div>
+{% for brand in all_brand.object_list %}
+     <dl class="des">
+					<dt>
+						<a href="{% url 'shop:brand_detail' brand.id %}">
+                            <div class="picpic">
+                                <img width="100" height="100" class="scrollLoading" src="{{ MEDIA_URL }}{{ brand.BrandImage }}"/>
+                            </div>
+                        </a>
+					<div class="btn">
+							<div class="fr btn2 bdsharebuttonbox " data-tag="share_{{ brand.id }}"
+                                 data="{'text':'品牌-{{ brand.BrandName }}-淘淘乐'}"
+                                 >
+
+
+                                <span class="fl">分享</span>
+                                <a href="#" class="bds_more" data-cmd="more"></a>
+                            </div>
+						</div>
+					</dt>
+					<dd>
+						<a href="{% url 'shop:brand_detail' brand.id %}">
+                            <h1>{{ brand.BrandName }}<span class="key picbig">正品认证</span></h1>
+                        </a>
+						<ul class="cont">
+							<li>品牌特点：<span>{{ brand.feature }}</span></li>
+							<li>喜欢人数：<span>{{ brand.LikeNum }}</span></li>
+							<li>售卖种类：<span>{{ brand.Category }}&nbsp;</span></li>
+						</ul>
+					</dd>
+                    <a class="buy buyservice" href="{% url 'shop:brand_detail' brand.id %}"><br/>查看<br/>详情</a>
+                </dl>
+            {% endfor %}
+
+
+
+
+		</div>
+		 <div class="pageturn">
+            <ul class="pagelist">
+              {% if all_brand.has_previous %}
+ <li class="long"><a href="?{{ all_brand.previous_page_number.querystring }}" >上一页</a></li>
+             {% endif %}
+          {% for page in all_brand.pages %}
+        {% if page %}
+            {% ifequal page all_brand.number %}
+                   <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+            {% else %}
+<li><a href="?{{ page.querystring }}">{{ page }}</a></li>
+            {% endifequal %}
+        {% else %}
+            <li class="none"><a href="">...</a></li>
+        {% endif %}
+    {% endfor %}
+    {% if all_brand.has_next %}
+    <li class="long"><a href="?{{ all_brand.next_page_number.querystring }}">下一页</a></li>
+    {% endif %}
+            </ul>
+         </div>
+	</div>
+	<div class="right layout">
+		<div class="head">品牌排行榜</div>
+
+        {% for rank_brand in rank_brand %}
+              <dl class="des">
+                <span class="num fl">{{ forloop.counter }}</span>
+                <a href="{% url 'shop:brand_detail' rank_brand.id %}">
+                    <dt>
+                        <img width="50" height="50" class="scrollLoading"  src="{{ MEDIA_URL }}{{ rank_brand.BrandImage }}"/>
+                    </dt>
+                </a>
+                <dd>
+                    <a href="{% url 'shop:brand_detail' rank_brand.id %}">
+                        <h1 title="{{ rank_brand.BrandName }}">{{ rank_brand.BrandName }}</h1>
+                    </a>
+                    <p>喜欢人数：<span>{{ rank_brand.LikeNum }}人</span></p>
+                </dd>
+            </dl>
+        {% endfor %}
+        
+
+        
+
+
+	</div>
+    </div>
+</section>
+{% endblock %}
+
+{% block custom_js %}
+<script>
+
+    window._bd_share_config = {
+        "common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":["mshare","qzone","tsina","weixin","sqq"],"bdPic":"","bdStyle":"0","bdSize":"16"},
+        share : [
+            {% for brand in all_brand.object_list %}
+                   {
+			"tag" : "share_{{ brand.id }}",
+			"bdSize" : 16,
+                       "bdText":"品牌-{{ brand.name }}-淘淘乐",
+                       "bdDesc": "我在淘淘乐#发现了“{{ brand.name }}”非常不错，即便宜又实惠，快来看看吧",
+                        "bdUrl": 'http://127.0.0.1:8000/{% url 'shop:brand_detail' brand.id %}',
+
+
+		},{% endfor %}
+]
+
+    }
+	//以下为js加载部分
+	with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+{% endblock %}
+

@@ -1,0 +1,45 @@
+{% extends 'shop_base.html' %}
+{% block page_path %}所有商品{% endblock %}
+{% block title %}商品详情页 |淘淘乐{% endblock %}
+{% load staticfiles %}
+{% block right_form %}
+<div class="right companycenter layout" >
+		<div class="head">
+			<h1>所有商品</h1>
+		</div>
+		<div class="brief group_list">
+
+            {% for product in all_products %}
+                            <div class="module1_5 box">
+                    <a class="comp-img-box" href="{% url 'product:product_detail' product.id %}">
+
+                        <img width="214" height="195" src="{{ MEDIA_URL }}{{ product.ProductImage }}"/>
+                    </a>
+                    <div class="des">
+                        <a href="{% url 'product:product_detail' product.id %}"><h2>{{ product.ProductName }}</h2></a>
+                        <span class="fl">价格：<i class="key">{{ product.price }}</i></span>
+                        <span class="fr">销量：{{ product.DealNum }}</span>
+                    </div>
+                    <div class="bottom">
+                        <span class="fl">{{ shop.ShopName }}</span>
+                         <span class="star fr  notlogin
+                            " data-favid="13" data-fav-type="4">
+                        {{ product.LikeNum }}
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+            
+            
+
+
+
+
+		</div>
+			<div class="pageturn">
+                <ul class="pagelist">
+                    <li class="active"><a href="?page=1">1</a></li>
+                </ul>
+            </div>
+	</div>
+{% endblock %}

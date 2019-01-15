@@ -1,0 +1,48 @@
+{% extends 'usercenter-base.html' %}
+{% block title %} 我的购买 | 淘淘乐{% endblock %}
+
+{% block custom_bread %}
+        <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="{% url 'index' %}">首页</a>></li>
+                <li><a href="{% url 'users:user_info' %}">个人中心</a>></li>
+                <li>我的购买</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+
+{% block right_content %}
+        <div class="right" >
+		<div class="personal_des Releasecont">
+			<div class="head">
+				<h1>我的购买</h1>
+			</div>
+		</div>
+		<div class="personal_des permessage">
+			<div class="companycenter">
+				<div class="group_list brief">
+
+                    {% for user_product in user_buy %}
+                    <div class="module1_5 box">
+                            <a href="{% url 'product:product_detail' user_product.product.id %}">
+                                <img width="214" height="190" class="scrollLoading" src="{{ MEDIA_URL }}{{ user_product.product.ProductImage }}"/>
+                            </a>
+                            <div class="des">
+                                <a href="{% url 'product:product_detail' user_product.product.id %}"><h2>{{ user_product.product.ProductName }}</h2></a>
+                                <span class="fl">价格：<i class="key">{{ user_product.product.price }}</i></span>
+                                <span class="fr">销量：{{ user_product.product.DealNum }}</span>
+                            </div>
+                            <div class="bottom">
+                                <span class="fl">{{ user_product.product.product_shop.ShopName }}</span>
+                                <span class="star fr  notlogin" data-favid="{{ user_product.product.id }}">{{ user_product.product.LikeNum }}</span>
+                            </div>
+                        </div>
+{% endfor %}
+
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
